@@ -38,8 +38,6 @@ public class AppController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/add_user/{name}/{team_id}/{score}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String addUser(@PathVariable String name, @PathVariable Integer team_id, @PathVariable Integer score){
-        String tmp = "select postgres.add_user('"+name+"', '"+team_id+"', " + "'"+score+"')";
-        String tmpp = "select postgres.add_user('"+name+"', '"+team_id+"', " + "'"+score+"')";
         return jdbcTemplate.queryForObject("select postgres.add_user('"+name+"', '"+team_id+"', " +
                 "'"+score+"')", String.class);
     }
