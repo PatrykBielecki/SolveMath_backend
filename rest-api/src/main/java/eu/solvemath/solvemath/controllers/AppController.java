@@ -10,8 +10,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.parser.Entity;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/")
@@ -83,6 +85,80 @@ public class AppController {
         map.put("user_id", userId);
         map.put("team_id", teamId);
         return map;
+
+    }
+
+
+
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/generate_equation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> generateEquation() {
+        int result = 0;
+        Random rand = new Random();
+
+        int num1 = rand.nextInt(1000) + 200;
+        int num2 = rand.nextInt(1000) + 200;
+        int kind = rand.nextInt(4);
+        String eqChar = "";
+
+
+        switch (kind) {
+            case 0: {
+                eqChar = "+";
+                result = num1 + num2;
+                break;
+            }
+            case 1: {
+                eqChar = "-";
+                while(num2 > num1){
+                    num2 = rand.nextInt(1000) + 200;
+                }
+                result = num1 - num2;
+                break;
+            }
+            case 2: {
+                eqChar = "/";
+                num1 = rand.nextInt(71) + 30;
+                num2 = rand.nextInt(19) + 2;
+
+                BigInteger big1 = BigInteger.valueOf(num1);
+                while (big1.isProbablePrime(1)) // sprawdza czy liczba pierwsza sie wylosowala i losuje inna bo bez sensu wtedy dzielimy ja przez 1 lub ja sama to  za latwe
+                {
+                    num1 = rand.nextInt(51) + 50;
+                    big1 = BigInteger.valueOf(num1);
+                }
+
+                result = num1 / num2;
+
+                while (num1 % num2 != 0) {
+                    num2 = rand.nextInt(9) + 2;
+                    result = num1 / num2;
+
+                }
+
+                break;
+            }
+            case 3: {
+                eqChar = "*";
+                num1 = rand.nextInt(9) + 2;
+                num2 = rand.nextInt(50) + 50;
+                result = num1 * num2;
+                break;
+            }
+            default: {
+                System.out.println("Kind equation error!");
+                break;
+            }
+        }
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("num1", String.valueOf(num1));
+        map.put("num2", String.valueOf(num2));
+        map.put("operator", eqChar);
+        map.put("result", String.valueOf(result));
+        return map;
+
 
     }
 
