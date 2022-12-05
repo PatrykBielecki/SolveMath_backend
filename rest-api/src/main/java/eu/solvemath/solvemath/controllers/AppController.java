@@ -160,7 +160,7 @@ public class AppController {
             question.term_2_arr.add(num2);
             question.operator_arr.add(eqChar);
             question.term_3_arr.add(result);
-            question.ans_1_arr.add(result + 2);
+            question.ans_1_arr.add(result);
             question.ans_2_arr.add(result + 4);
             question.ans_3_arr.add(result - 2);
             question.ans_4_arr.add(result - 6);
