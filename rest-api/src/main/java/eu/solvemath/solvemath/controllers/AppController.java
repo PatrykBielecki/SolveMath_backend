@@ -1,6 +1,7 @@
 package eu.solvemath.solvemath.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.solvemath.solvemath.mapping.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -93,71 +94,80 @@ public class AppController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/generate_equation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> generateEquation() {
+    public Question generateEquation() {
+
         int result = 0;
         Random rand = new Random();
+        Question question = new Question();
 
-        int num1 = rand.nextInt(1000) + 200;
-        int num2 = rand.nextInt(1000) + 200;
-        int kind = rand.nextInt(4);
-        String eqChar = "";
+        while (question.term_3_arr.size() <= 4) {
+            int num1 = rand.nextInt(1000) + 200;
+            int num2 = rand.nextInt(1000) + 200;
+            int kind = rand.nextInt(4);
+            String eqChar = "";
 
 
-        switch (kind) {
-            case 0: {
-                eqChar = "+";
-                result = num1 + num2;
-                break;
-            }
-            case 1: {
-                eqChar = "-";
-                while(num2 > num1){
-                    num2 = rand.nextInt(1000) + 200;
+            switch (kind) {
+                case 0: {
+                    eqChar = "+";
+                    result = num1 + num2;
+                    break;
                 }
-                result = num1 - num2;
-                break;
-            }
-            case 2: {
-                eqChar = "/";
-                num1 = rand.nextInt(71) + 30;
-                num2 = rand.nextInt(19) + 2;
-
-                BigInteger big1 = BigInteger.valueOf(num1);
-                while (big1.isProbablePrime(1)) // sprawdza czy liczba pierwsza sie wylosowala i losuje inna bo bez sensu wtedy dzielimy ja przez 1 lub ja sama to  za latwe
-                {
-                    num1 = rand.nextInt(51) + 50;
-                    big1 = BigInteger.valueOf(num1);
+                case 1: {
+                    eqChar = "-";
+                    while (num2 > num1) {
+                        num2 = rand.nextInt(1000) + 200;
+                    }
+                    result = num1 - num2;
+                    break;
                 }
+                case 2: {
+                    eqChar = "/";
+                    num1 = rand.nextInt(71) + 30;
+                    num2 = rand.nextInt(19) + 2;
 
-                result = num1 / num2;
+                    BigInteger big1 = BigInteger.valueOf(num1);
+                    while (big1.isProbablePrime(1)) // sprawdza czy liczba pierwsza sie wylosowala i losuje inna bo bez sensu wtedy dzielimy ja przez 1 lub ja sama to  za latwe
+                    {
+                        num1 = rand.nextInt(51) + 50;
+                        big1 = BigInteger.valueOf(num1);
+                    }
 
-                while (num1 % num2 != 0) {
-                    num2 = rand.nextInt(9) + 2;
                     result = num1 / num2;
 
-                }
+                    while (num1 % num2 != 0) {
+                        num2 = rand.nextInt(9) + 2;
+                        result = num1 / num2;
 
-                break;
+                    }
+
+                    break;
+                }
+                case 3: {
+                    eqChar = "*";
+                    num1 = rand.nextInt(9) + 2;
+                    num2 = rand.nextInt(50) + 50;
+                    result = num1 * num2;
+                    break;
+                }
+                default: {
+                    System.out.println("Kind equation error!");
+                    break;
+                }
             }
-            case 3: {
-                eqChar = "*";
-                num1 = rand.nextInt(9) + 2;
-                num2 = rand.nextInt(50) + 50;
-                result = num1 * num2;
-                break;
-            }
-            default: {
-                System.out.println("Kind equation error!");
-                break;
-            }
+
+            question.term_1_arr.add(num1);
+            question.term_2_arr.add(num2);
+            question.operator_arr.add(eqChar);
+            question.term_3_arr.add(result);
+            question.ans_1_arr.add(result + 2);
+            question.ans_2_arr.add(result + 4);
+            question.ans_3_arr.add(result - 2);
+            question.ans_4_arr.add(result - 6);
+
         }
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("num1", String.valueOf(num1));
-        map.put("num2", String.valueOf(num2));
-        map.put("operator", eqChar);
-        map.put("result", String.valueOf(result));
-        return map;
+        return question;
 
 
     }
