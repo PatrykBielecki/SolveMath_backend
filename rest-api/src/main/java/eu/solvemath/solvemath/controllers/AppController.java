@@ -89,24 +89,16 @@ public class AppController {
 
     }
 
-
-
-
-
     @RequestMapping(method = RequestMethod.GET, value = "/generate_equation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Question generateEquation() {
-
         int result = 0;
         Random rand = new Random();
         Question question = new Question();
-
         while (question.term_3_arr.size() <= 4) {
             int num1 = rand.nextInt(1000) + 200;
             int num2 = rand.nextInt(1000) + 200;
             int kind = rand.nextInt(4);
             String eqChar = "";
-
-
             switch (kind) {
                 case 0: {
                     eqChar = "+";
@@ -125,22 +117,18 @@ public class AppController {
                     eqChar = "/";
                     num1 = rand.nextInt(71) + 30;
                     num2 = rand.nextInt(19) + 2;
-
                     BigInteger big1 = BigInteger.valueOf(num1);
                     while (big1.isProbablePrime(1)) // sprawdza czy liczba pierwsza sie wylosowala i losuje inna bo bez sensu wtedy dzielimy ja przez 1 lub ja sama to  za latwe
                     {
                         num1 = rand.nextInt(51) + 50;
                         big1 = BigInteger.valueOf(num1);
                     }
-
                     result = num1 / num2;
 
                     while (num1 % num2 != 0) {
                         num2 = rand.nextInt(9) + 2;
                         result = num1 / num2;
-
                     }
-
                     break;
                 }
                 case 3: {
@@ -156,20 +144,38 @@ public class AppController {
                 }
             }
 
+            int zestaw = rand.nextInt(4);
+
+            if ( zestaw == 0 ){
+                question.ans_1_arr.add(result);
+                question.ans_2_arr.add(result - rand.nextInt(5)-1);
+                question.ans_3_arr.add(result + rand.nextInt(5)+1);
+                question.ans_4_arr.add(result + rand.nextInt(10)+5);
+            }
+            else if ( zestaw == 1 ){
+                question.ans_1_arr.add(result + rand.nextInt(5)+1);
+                question.ans_2_arr.add(result);
+                question.ans_3_arr.add(result - rand.nextInt(5)-1);
+                question.ans_4_arr.add(result + rand.nextInt(10)+5);
+            }
+            else if ( zestaw == 2 ){
+                question.ans_1_arr.add(result - rand.nextInt(5)-1);
+                question.ans_2_arr.add(result + rand.nextInt(10)+5);
+                question.ans_3_arr.add(result + rand.nextInt(5)+1);
+                question.ans_4_arr.add(result);
+            }
+            else if ( zestaw == 3 ){
+                question.ans_1_arr.add(result + rand.nextInt(5)+1);
+                question.ans_2_arr.add(result - rand.nextInt(5)-1);
+                question.ans_3_arr.add(result + rand.nextInt(10)+5);
+                question.ans_4_arr.add(result);
+            }
+
             question.term_1_arr.add(num1);
             question.term_2_arr.add(num2);
             question.operator_arr.add(eqChar);
             question.term_3_arr.add(result);
-            question.ans_1_arr.add(result);
-            question.ans_2_arr.add(result + 4);
-            question.ans_3_arr.add(result - 2);
-            question.ans_4_arr.add(result - 6);
-
         }
-
         return question;
-
-
     }
-
 }
